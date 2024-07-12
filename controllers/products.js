@@ -14,13 +14,16 @@ const getAllProductsStatic = async (req, res) => {
   // throw new Error('Not implemented yet');
   console.log('Testing with static ...');
   
-  const products = await Product.find({}).sort('-name price');
+  const products = await Product.find({})
+  .select('name')
+  .limit(10)
+  // .skip(5)
 
   res.status(200).json({ products, nbHits: products.length });
 }
 
 const getAllProducts = async (req, res) => {
-  const {featured, company, name, sort} = req.query;
+  const {featured, company, name, sort, fields} = req.query;
   const queryObj = {};
   
   if (featured) queryObj.featured = featured === 'true' ? true : false;
@@ -44,6 +47,22 @@ const getAllProducts = async (req, res) => {
   } else {
     result = result.sort('createdAt');
   }
+
+  if (fields) {
+    const fieldsArray = fields.split(',').join(' ');
+    result = result.select(fieldsArray);
+  }
+  
+  // pagination 
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  result = result.skip(skip).limit(limit);
+  /**
+   * 23 total 
+   *  4 - 7 7 7 2
+   */
 
   const products = await result
   res.status(200).json({ products, nbHits: products.length });
