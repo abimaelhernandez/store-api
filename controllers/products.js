@@ -12,13 +12,15 @@ const { options } = require('../routes/products');
 
 const getAllProductsStatic = async (req, res) => {
   // throw new Error('Not implemented yet');
-  console.log('get all productsz STATIC ');
-  const products = await Product.find({});
+  console.log('Testing with static ...');
+  
+  const products = await Product.find({}).sort('-name price');
+
   res.status(200).json({ products, nbHits: products.length });
 }
 
 const getAllProducts = async (req, res) => {
-  const {featured, company, name} = req.query;
+  const {featured, company, name, sort} = req.query;
   const queryObj = {};
   
   if (featured) queryObj.featured = featured === 'true' ? true : false;
@@ -31,7 +33,19 @@ const getAllProducts = async (req, res) => {
     queryObj.name = {$regex : name, $options: 'i' }
   }
 
-  const products = await Product.find(queryObj);
+  
+  let result  = Product.find(queryObj);
+  
+  if (sort) {
+    // products = products.sort();
+    console.log('Sorting ...', sort);
+    const sortOrder = sort.split(',').join(' ')
+    result = result.sort(sortOrder);
+  } else {
+    result = result.sort('createdAt');
+  }
+
+  const products = await result
   res.status(200).json({ products, nbHits: products.length });
 }
 
