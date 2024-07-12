@@ -15,7 +15,8 @@
     "name": "albany table",
     "price": 309,
     "company": "liddy",
-    "rating": 4.9
+    "rating": 4.9,
+    "featured": true
   },
   {
     "name": "armchair",
