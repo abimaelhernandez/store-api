@@ -1,3 +1,5 @@
+const Product = require('../models/product');
+
 /* 
 - CONTROLLERS
 - get all products
@@ -8,12 +10,14 @@
 */ 
 
 const getAllProductsStatic = async (req, res) => {
+  // throw new Error('Not implemented yet');
   console.log('get all productsz STATIC ');
-  res.status(200).json({msg: 'get products STATIC'});
+  const products = await Product.find({});
+  res.status(200).json({ products, nbHits: products.length });
 }
 
 const getAllProducts = async (req, res) => {
-  res.status(200).send('get all products');
+  res.status(200).json({msg: 'get all products'});
 }
 
 

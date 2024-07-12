@@ -1,12 +1,12 @@
 require('dotenv').config();
-require('./routes/products');
+// require('./routes/products');
+require('express-async-errors');
 
 const express = require('express');
 
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 const connectDB = require('./db/connect');
-// const productControllers = require('./controllers/products');
 const productsRouter = require('./routes/products');
 
 console.log('in App js')
@@ -15,18 +15,16 @@ console.log('in App js')
 const app = express();
 const port = process.env.PORT || 3000;
 //  middleware 
+
 app.use(express.json());
-// app.use(errorHandlerMiddleware);
 
 // routes 
 app.get('/', (req, res) => {
   res.send('<h1>Hello, Express!<a href="/api/v1/product"> click here</a></h1>')
 });
 
-app.use('/api/v1/product', (req, res) => {
-  console.log('in products router')
-  app.send('route working properly');
-});
+// set up router
+app.use('/api/v1/products', productsRouter);
 
 const start = async () => {
   try {
@@ -40,4 +38,6 @@ const start = async () => {
 }
 
 app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
+
 start();
